@@ -12,8 +12,8 @@ from entities.fighter import Fighter
 from load_map.game_map import GameMap
 from recalculate_fov import recalculate_fov
 from get_blocking_sprites import get_blocking_sprites
-from map_to_sprites import map_to_sprites
-from map_to_sprites import creatures_to_sprites
+from dungeon_map_to_sprites import dungeon_map_to_sprites
+from dungeon_map_to_sprites import creatures_to_sprites
 from entities.restore_entity import restore_entity
 
 
@@ -69,8 +69,8 @@ class GameEngine:
         # Create player
         fighter_component = Fighter(hp=30, defense=2, power=5, level=1)
         self.player = Entity(
-            x=0,
-            y=0,
+            column=0,
+            row=0,
             texture_id=PLAYER_TEXTURE_ID,
             color=colors['player'],
             fighter=fighter_component,
@@ -87,19 +87,16 @@ class GameEngine:
 
         :param level_number:
         """
-        # --- Create map
-        # Size of the map
-        map_width = MAP_WIDTH
-        map_height = MAP_HEIGHT
+        # --- Load map
 
         level = GameLevel()
 
         self.game_map = GameMap(level_number=level_number)
         self.game_map.make_map(player=self.player, level=level_number)
 
-        level.dungeon_sprites = map_to_sprites(self.game_map.tiles)
-        level.entities = map_to_sprites(self.game_map.entities)
-        level.creatures = creatures_to_sprites(self.game_map.creatures)
+        level.dungeon_sprites = dungeon_map_to_sprites(self.game_map.dungeon_map)
+        level.entities = dungeon_map_to_sprites(self.game_map.dungeon_map)
+        level.creatures = creatures_to_sprites(self.game_map.dungeon_map)
         level.level = level_number
 
         # Set field of view

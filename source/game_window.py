@@ -6,6 +6,7 @@ from typing import Optional, Tuple
 import arcade
 import json
 import pyglet.gl as gl
+from pyglet.math import Vec2
 
 from constants import *
 from entities.entity import Entity
@@ -55,6 +56,9 @@ class MyGame(arcade.Window):
         # These are sprites that appear as buttons on the character sheet.
         self.character_sheet_buttons = arcade.SpriteList()
 
+        self.camera_sprites = arcade.Camera(width, height)
+        self.camera_gui = arcade.Camera(width, height)
+
         arcade.set_background_color(colors['background'])
 
     def setup(self):
@@ -71,6 +75,28 @@ class MyGame(arcade.Window):
             sprite.center_y = y_value
             sprite.name = button_name
             self.character_sheet_buttons.append(sprite)
+
+    def scroll_to_player(self):
+        """
+        Scroll the window to the player.
+
+        if CAMERA_SPEED is 1, the camera will immediately move to the desired position.
+        Anything between 0 and 1 will have the camera move to the location with a smoother
+        pan.
+        """
+
+        position = Vec2(self.game_engine.player.center_x - self.width / 2,
+                        self.game_engine.player.center_y - self.height / 2)
+        self.camera_sprites.move_to(position)
+
+    def on_resize(self, width: int, height: int):
+        """
+        Resize window
+        Handle the user grabbing the edge and resizing the window.
+        """
+        self.camera_sprites.resize(width, height)
+        self.camera_gui.resize(width, height)
+        self.scroll_to_player()
 
     def draw_hp_and_status_bar(self):
         text = f"HP: {self.game_engine.player.fighter.hp}/{self.game_engine.player.fighter.max_hp}"
@@ -195,10 +221,15 @@ class MyGame(arcade.Window):
 
     def draw_sprites_and_status_panel(self):
         # Draw the sprites
+        self.scroll_to_player()
+        self.camera_sprites.use()
+
         self.game_engine.cur_level.dungeon_sprites.draw(filter=gl.GL_NEAREST)
         self.game_engine.cur_level.entities.draw(filter=gl.GL_NEAREST)
         self.game_engine.cur_level.creatures.draw(filter=gl.GL_NEAREST)
         self.game_engine.characters.draw(filter=gl.GL_NEAREST)
+
+        self.camera_gui.use()
 
         # Draw the status panel
         arcade.draw_xywh_rectangle_filled(
@@ -236,7 +267,9 @@ class MyGame(arcade.Window):
         :param button:
         :param modifiers:
         """
-
+        ax, ay = self.camera_sprites.position
+        grid_x, grid_y = pixel_to_char(x + ax, y + ay)
+        print(f"{grid_x}, {grid_y}")
         # If we are currently in a 'select location' state, process
         if self.game_engine.game_state == STATE.SELECT_LOCATION:
             # Grab grid location
@@ -332,6 +365,8 @@ class MyGame(arcade.Window):
 
         elif key in KEYMAP.USE_STAIRS:
             self.game_engine.action_queue.extend([{"use_stairs": True}])
+
+        self.scroll_to_player()
 
     def on_key_release(self, key: int, modifiers: int):
         """
@@ -432,8 +467,6 @@ class MyGame(arcade.Window):
 
         :param delta_time:
         """
-
-
 
         # --- Manage continuous movement while direction keys are held down
 

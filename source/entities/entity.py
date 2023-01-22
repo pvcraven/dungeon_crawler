@@ -13,8 +13,8 @@ class Entity(arcade.Sprite):
 
     def __init__(
         self,
-        x: int = 0,
-        y: int = 0,
+        column: int = 0,
+        row: int = 0,
         texture_id: int = 0,
         color=arcade.csscolor.WHITE,
         visible_color=arcade.csscolor.WHITE,
@@ -34,8 +34,8 @@ class Entity(arcade.Sprite):
         self._y = 0
         self._texture_id = 0
 
-        self.x = x
-        self.y = y
+        self.x = column
+        self.y = row
         self.texture_id = texture_id
 
         self.color = color

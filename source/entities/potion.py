@@ -4,10 +4,10 @@ from entities.item import Item
 
 
 class Potion(Entity):
-    def __init__(self, x: int = 0, y: int = 0):
+    def __init__(self, column: int = 0, row: int = 0):
         super().__init__(
-            x,
-            y,
+            column,
+            row,
             texture_id=POTION_TEXTURE_ID,
             color=colors["transparent"],
             visible_color=colors["potion"],

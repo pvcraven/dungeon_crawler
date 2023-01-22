@@ -8,10 +8,10 @@ from entities.entity import Entity
 
 
 class LightningScroll(Entity):
-    def __init__(self, x: int = 0, y: int = 0):
+    def __init__(self, column: int = 0, row: int = 0):
         super().__init__(
-            x=x,
-            y=y,
+            column=column,
+            row=row,
             texture_id=SCROLL_TEXTURE_ID,
             color=colors["transparent"],
             visible_color=colors["potion"],

@@ -4,8 +4,8 @@ from entities.entity import Entity
 
 class Stairs(Entity):
     def __init__(self,
-                 x: int = 0,
-                 y: int = 0,
+                 column: int = 0,
+                 row: int = 0,
                  texture_id: int = 0,
                  color=arcade.csscolor.WHITE,
                  visible_color=arcade.csscolor.WHITE,
@@ -17,7 +17,7 @@ class Stairs(Entity):
                  inventory=None,
                  item=None,
                  floor: int = 0):
-        super().__init__(x, y, texture_id, color, visible_color, not_visible_color, name, blocks, fighter, ai, inventory, item)
+        super().__init__(column, row, texture_id, color, visible_color, not_visible_color, name, blocks, fighter, ai, inventory, item)
         self.floor = floor
 
     def get_dict(self):

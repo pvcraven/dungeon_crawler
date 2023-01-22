@@ -24,7 +24,10 @@ def map_to_sprites(game_map: List[List[int]]) -> arcade.SpriteList:
             sprite = None
             # print(f"{game_map[x][y]} ", end="")
             if game_map[x][y] == TILE.WALL:
-                sprite = Entity(x, y, WALL_TEXTURE_ID, colors['transparent'])
+                image_id = WALL_TEXTURE_ID
+                if game_map[x][y - 1] == TILE.FLOOR:
+                    image_id = VISIBLE_WALL_ID
+                sprite = Entity(x, y, image_id, colors['transparent'])
                 sprite.name = "Wall"
                 sprite.block_sight = True
                 sprite.blocks = True
@@ -70,7 +73,7 @@ def creatures_to_sprites(game_map: List[List[int]]) -> arcade.SpriteList:
                 sprite = make_monster_sprite(m)
                 sprite.x = x
                 sprite.y = y
-                sprite.alpha = 0
+                # sprite.alpha = 0
                 sprite.visible_color = colors['monster']
 
                 sprite_list.append(sprite)
